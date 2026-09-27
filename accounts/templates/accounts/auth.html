@@ -1,0 +1,190 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+    <title>AFK Auth</title>
+    <link
+        rel="stylesheet"
+        href="{% static 'accounts/style.css' %}"
+    >
+</head>
+
+<body>
+<div class="auth-container">
+    <div class="auth-box">
+        <div class="logo">
+            AFK<span>.</span>
+        </div>
+
+        {% if user.is_authenticated %}
+
+            <div class="authorized">
+                <div class="status">
+                    ● ONLINE
+                </div>
+
+                <h1>
+                    Welcome, {{ user.username }}
+                </h1>
+
+                <p>
+                    Ты успешно авторизован.
+                </p>
+
+                <form
+                    method="POST"
+                    action="{% url 'logout' %}"
+                >
+
+                    {% csrf_token %}
+
+                    <button
+                        type="submit"
+                        class="main-button"
+                    >
+                        Выйти
+                    </button>
+                </form>
+            </div>
+
+        {% else %}
+
+            <div class="tabs">
+                <button
+                    type="button"
+                    class="tab {% if active_tab == 'login' %}active{% endif %}"
+                    data-tab="login"
+                >
+                    Войти
+                </button>
+
+                <button
+                    type="button"
+                    class="tab {% if active_tab == 'register' %}active{% endif %}"
+                    data-tab="register"
+                >
+                    Регистрация
+                </button>
+            </div>
+
+            <form
+                method="POST"
+                class="auth-form {% if active_tab == 'login' %}active{% endif %}"
+                id="login"
+            >
+
+                {% csrf_token %}
+
+                <input
+                    type="hidden"
+                    name="action"
+                    value="login"
+                >
+
+                <label>
+                    Логин
+                </label>
+
+                {{ login_form.username }}
+
+                <label>
+                    Пароль
+                </label>
+
+                {{ login_form.password }}
+
+                {% if login_form.errors %}
+
+                    <div class="errors">
+
+                        {% for error in login_form.non_field_errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+
+                        {% for field in login_form %}
+                            {% for error in field.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        {% endfor %}
+
+                    </div>
+
+                {% endif %}
+
+                <button
+                    type="submit"
+                    class="main-button"
+                >
+                    Войти
+                </button>
+            </form>
+
+            <form
+                method="POST"
+                class="auth-form {% if active_tab == 'register' %}active{% endif %}"
+                id="register"
+            >
+
+                {% csrf_token %}
+
+                <input
+                    type="hidden"
+                    name="action"
+                    value="register"
+                >
+
+                <label>
+                    Логин
+                </label>
+
+                {{ register_form.username }}
+
+                <label>
+                    Пароль
+                </label>
+
+                {{ register_form.password1 }}
+
+                <label>
+                    Повторите пароль
+                </label>
+
+                {{ register_form.password2 }}
+
+                {% if register_form.errors %}
+
+                    <div class="errors">
+
+                        {% for field in register_form %}
+                            {% for error in field.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        {% endfor %}
+
+                    </div>
+
+                {% endif %}
+
+                <button
+                    type="submit"
+                    class="main-button"
+                >
+                    Создать аккаунт
+                </button>
+            </form>
+
+        {% endif %}
+
+    </div>
+</div>
+
+<script src="{% static 'accounts/script.js' %}"></script>
+</body>
+</html>
